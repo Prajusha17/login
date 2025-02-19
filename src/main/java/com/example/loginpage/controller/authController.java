@@ -18,7 +18,7 @@ public class authController {
     // 1️⃣ Initiate Sign-up - Store in temp memory & send OTP
     @PostMapping("/signup")
     public ResponseEntity<String> initiateSignup(@RequestBody Map<String, String> requestData, HttpSession session) {
-        String firstName = requestData.get("firstName");
+        String firstName = requestData.get("Name");
         String lastName = requestData.get("lastName");
         String email = requestData.get("email");
         String password = requestData.get("password");
