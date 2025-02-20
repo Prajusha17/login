@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Service
-
 public class authService {
+
     @Autowired
     private userRepository userRepository;
 
@@ -86,7 +86,7 @@ public class authService {
 
         // Assign user-name
         user.setUsername(username);
-
+        user.setActive(true);
         // Save user to database (only now)
         userRepository.save(user);
 
@@ -98,13 +98,25 @@ public class authService {
 
     // 4️⃣ Login with Username & Password
     public String loginWithUsernamePassword(String username, String password) {
-        Optional<User> userOptional = userRepository.findById(username);
-        if (userOptional.isPresent() && userOptional.get().isVerified() &&
-            passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            return "Login successful!";
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get(); // Extract the user object once
+
+            if (!user.getIsActive()) {
+                return "Account is inactive! Please complete registration.";
+            }
+
+            if (user.isVerified() && passwordEncoder.matches(password, user.getPassword())) {
+                user.updateLastLogin(); // Update last login timestamp
+                userRepository.save(user); // Save changes to the database
+                return "Login successful!";
+            }
         }
+        
         return "Invalid credentials or user not verified!";
     }
+
 
     // 5️⃣ Google Authentication (Dummy)
     public String googleAuth(String googleToken) {

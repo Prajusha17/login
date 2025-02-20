@@ -4,21 +4,23 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.loginpage.service.authService;
 
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "", allowedHeaders = "")
 public class authController {
-	@Autowired
+
+    @Autowired
     private authService authService;
 
     // 1️⃣ Initiate Sign-up - Store in temp memory & send OTP
     @PostMapping("/signup")
     public ResponseEntity<String> initiateSignup(@RequestBody Map<String, String> requestData, HttpSession session) {
-        String firstName = requestData.get("Name");
+        String firstName = requestData.get("firstName");
         String lastName = requestData.get("lastName");
         String email = requestData.get("email");
         String password = requestData.get("password");
@@ -54,6 +56,7 @@ public class authController {
     @PostMapping("/setUsername")
     public String setUsername(@RequestParam("username") String username, HttpSession session) {
         String email = (String) session.getAttribute("email");
+        
 
         if (email == null) {
             return "Please verify your email first!";
@@ -105,4 +108,3 @@ public class authController {
         return ResponseEntity.ok(result);
     }
 }
-

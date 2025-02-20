@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(unique = true, nullable = true)  
+	@Column(unique = true, nullable = true)  // Unique username
 	private String username;
 
     @Column(nullable = false, unique = true)
@@ -46,11 +45,16 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now(); 
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedDate = LocalDateTime.now();
+    }
+
+    public void updateLastLogin() {
+        this.lastLoginAt = LocalDateTime.now();
     }
     private String otp; // Temporary field for OTP validation
     private boolean isVerified = false; // To track whether the user is verified
@@ -116,5 +120,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }
